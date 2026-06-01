@@ -1,0 +1,67 @@
+services:
+  stocky-db:
+    image: postgres:latest
+    container_name: stocky-dev-db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_HOST_PORT_DEV}:${DB_PORT}"
+    volumes:
+      - db-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - stocky-network
+
+  stocky-back:
+    image: node:20-alpine
+    container_name: stocky-dev-back
+    working_dir: /app
+    volumes:
+      - ./back:/app
+      - back-node-modules:/app/node_modules
+    env_file:
+      - .env
+    ports:
+      - ":3000"
+    depends_on:
+      stocky-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - stocky-network
+    command: sh -c "npm install && npm run dev"
+
+  stocky-front:
+    image: node:20-alpine
+    container_name: stocky-dev-front
+    working_dir: /app
+    volumes:
+      - ./front:/app
+      - front-node-modules:/app/node_modules
+    ports:
+      - "${FRONT_HOST_PORT_DEV}:3000"
+    depends_on:
+      stocky-back:
+        condition: service_healthy
+    networks:
+      - stocky-network
+    command: sh -c "npm install && npm run dev"
+
+volumes:
+  db-data:
+  back-node-modules:
+  front-node-modules:
+
+networks:
+  stocky-network:
+    driver: bridge
