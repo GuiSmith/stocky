@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "node --watch server.js",
     "start": "node server.js",
-    "migrate": "node src/database/migrate.js"
+    "migrate": "node src/database/migrate.js",
+    "db:pull": "npx prisma db pull",
+    "db:generate": "npx prisma generate",
+    "db:sync": "npm run migrate && npx prisma db pull && npx prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.9.0",
