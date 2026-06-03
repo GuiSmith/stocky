@@ -7,7 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model Example {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-// }
+model migrations {
+  nome_arquivo String   @id @db.VarChar(200)
+  executada_em DateTime @default(now()) @db.Timestamp(6)
+}
+
+model usuario {
+  id    Int     @id @default(autoincrement())
+  nome  String  @db.VarChar(150)
+  cpf   String  @unique @db.Char(11)
+  email String  @unique @db.VarChar(150)
+  senha String
+  ativo Boolean @default(true)
+}
