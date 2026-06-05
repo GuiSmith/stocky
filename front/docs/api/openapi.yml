@@ -92,6 +92,32 @@ paths:
                 erroInterno:
                   value:
                     error: Erro interno do servidor
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout
+      description: Encerra a autenticacao no navegador removendo o cookie de autenticacao.
+      operationId: logout
+      responses:
+        "204":
+          description: Logout realizado.
+          headers:
+            Set-Cookie:
+              description: Cookie de autenticacao expirado.
+              schema:
+                type: string
+                example: token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax
+        "500":
+          description: Erro inesperado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                erroInterno:
+                  value:
+                    error: Erro interno do servidor
   /usuarios:
     post:
       tags:

@@ -15,7 +15,6 @@ const getTokenCookieOptions = (req) => ({
   httpOnly: true,
   secure: isSecureRequest(req),
   sameSite: "lax",
-  maxAge: COOKIE_MAX_AGE,
   path: "/",
 });
 
@@ -23,13 +22,23 @@ const login = async (req, res) => {
   const dto = loginDTO(req.body);
   const autenticacao = await authService.login(dto);
 
-  res.cookie("token", autenticacao.token, getTokenCookieOptions(req));
+  res.cookie("token", autenticacao.token, {
+    ...getTokenCookieOptions(req),
+    maxAge: COOKIE_MAX_AGE,
+  });
 
   return res.status(200).json({
     usuario: autenticacao.usuario,
   });
 };
 
+const logout = async (req, res) => {
+  res.clearCookie("token", getTokenCookieOptions(req));
+
+  return res.status(204).send();
+};
+
 export default {
   login,
+  logout,
 };
