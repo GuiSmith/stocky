@@ -5,13 +5,22 @@
 * Do not create `.codex` directories
 * Skills are present in `.agents/SKILLS`
 
+## `.agents` structure
+* `AGENTS.md` is hierarchy 1 and defines the repository-level instructions.
+* `.agents/SKILLS` stores local skills. Prefer local skills over equivalent non-local skills.
+* `.agents/CORE` is hierarchy 2. Read the files in this directory for every task passed to you.
+* `.agents/TASKS` stores tasks passed to you.
+* `.agents/TASKS/QUEUE` stores tasks that are not done yet.
+* `.agents/TASKS/LOG` stores tasks that are already done. Do not read `LOG` unless the user asks.
+* Every time a task from `QUEUE` is executed, ask whether you may commit and whether you may move the task to `LOG`.
+
 ## Skills
 * If you already have a skill and there is a local skill that does roughly the same thing, go with the local one
 * If the skill is ambiguous, do not use it.
 
 ## Clean work tree
 * When the work tree is not clean, refuse to work on new tasks if the context differs from the current work tree. Let's call this rule *clean work tree*
-* If you refused to act on a new task because of the rule *clean work tree*, write down two things in a new file inside the directory `.agents/TASKS-QUEUE`
+* If you refused to act on a new task because of the rule *clean work tree*, write down two things in a new file inside the directory `.agents/TASKS/QUEUE`
     1. The actual prompt of the task 
     2. Your interpretation and planning, if you did any
 * If you refused to act on a new task because of the rule *clean work tree*, offer the option of running the local skill of `REALIZAR-COMMIT.md`
@@ -53,7 +62,7 @@ Do not commit or alter `.env` files, secrets, database dumps, or generated depen
 * Alawyas check and follow the source of truth before implementing something that was asked
 * If a request goes against the source of truth, do not change anything and bring up the conflict
 * The source of truth is your guide and anything that isn't coding and that isn't defined in there shouldn't be assumed, so it must be asked
-* The source of truth is in .agents/SOURCE-OF-TRUTH.md
+* The source of truth is in `.agents/CORE/SOURCE-OF-TRUTH.md`
 
 ## Back-end
 * After alterations on the API, the API should be documented in `front/docs/api/openapi.yml`
